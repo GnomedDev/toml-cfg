@@ -44,7 +44,7 @@
 //! ## Configuration
 //!
 //! With the `TOML_CFG` environment variable is set with a value containing
-//! "require_cfg_present", the `toml-cfg` proc macro will panic if no valid config
+//! `require_cfg_present`, the `toml-cfg` proc macro will panic if no valid config
 //! file is found. This is indicative of either no `cfg.toml` file existing in the
 //! "root project" path, or a failure to find the correct "root project" path.
 //!
@@ -87,6 +87,8 @@
 //! Guten tag!
 //! ```
 //!
+#![warn(clippy::pedantic)]
+#![allow(clippy::missing_panics_doc)]
 
 use heck::ToShoutySnekCase;
 use proc_macro::TokenStream;
@@ -121,8 +123,7 @@ pub fn toml_config(_attr: TokenStream, item: TokenStream) -> TokenStream {
         false
     };
 
-    let root_path = find_root_path();
-    let cfg_path = root_path.clone();
+    let cfg_path = find_root_path();
     let cfg_path = cfg_path.as_ref().map(|c| {
         let mut x = c.to_owned();
         x.push("cfg.toml");
@@ -135,7 +136,7 @@ pub fn toml_config(_attr: TokenStream, item: TokenStream) -> TokenStream {
         assert!(
             got_cfg,
             "TOML_CFG=require_cfg_present set, but valid config not found!"
-        )
+        );
     }
     let cfg = maybe_cfg.unwrap_or_default();
 
